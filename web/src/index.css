@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{--bg:246 247 249;--card:255 255 255;--ink:26 29 35;--mute:102 112 133;--line:227 230 235;--accent:11 107 58;--accent-ink:255 255 255;--warn:181 71 8;--warnbg:255 244 229;--bad:180 35 24;--good:6 118 71;--goodbg:232 246 238;--info:46 144 250}
+@media (prefers-color-scheme:dark){:root{--bg:16 18 21;--card:24 27 32;--ink:232 234 238;--mute:152 162 179;--line:42 47 55;--accent:63 185 122;--accent-ink:6 33 15;--warn:253 176 34;--warnbg:58 42 10;--bad:249 112 102;--good:71 205 137;--goodbg:15 42 28}}
+
+@layer base{
+  html{-webkit-text-size-adjust:100%}
+  html,body{max-width:100%;overflow-x:hidden}
+  body{@apply bg-bg text-ink font-sans text-[15px] leading-relaxed antialiased max-sm:text-[14.5px]}
+  h1,h2,h3{@apply leading-tight tracking-tight}
+  h2{@apply text-[19px] font-semibold mb-2.5 max-sm:text-lg}
+  h3{@apply text-[15px] font-semibold}
+  a{@apply text-accent}
+  input,select,textarea{@apply w-full min-w-0 max-w-full rounded-lg border border-line bg-bg px-2.5 py-1.5 text-ink max-sm:min-h-10}
+  input[type=checkbox],input[type=radio]{@apply w-auto min-h-0 shrink-0}
+  textarea{@apply min-h-20 resize-y}
+  label{@apply block text-[13px] text-mute mb-0.5}
+  :where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{@apply outline outline-[3px] outline-accent outline-offset-2 rounded-md}
+  table{@apply w-full border-collapse}
+  th,td{@apply text-left p-2 border-b border-line align-top break-words}
+  main,.card,td,th,h1,h2,h3{overflow-wrap:anywhere}
+  details>summary{@apply cursor-pointer font-semibold}
+  dialog::backdrop{background:rgba(16,24,40,.55)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+}
+@keyframes shimmer{to{background-position:-200% 0}}
+.sk{background:linear-gradient(90deg,rgb(var(--line)) 25%,rgb(var(--bg)) 50%,rgb(var(--line)) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite}

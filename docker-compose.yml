@@ -1,0 +1,19 @@
+services:
+  jobfinder:
+    build: .
+    # Localhost only by default. To expose it, put a TLS reverse proxy in front (docs/DEPLOYMENT.md) rather than
+    # publishing this port to the internet: basic-auth passwords are readable over plain HTTP.
+    ports: ["127.0.0.1:3000:3000"]
+    env_file: .env            # must define APP_PASSWORD (the app refuses to start without it); APP_SECRET for email credentials
+    environment:
+      DATA_DIR: /data
+      HOST: 0.0.0.0
+      TRUST_PROXY: ${TRUST_PROXY:-}
+    volumes:
+      - jobfinder-data:/data  # uploaded files (the database is your Supabase project). Back this up.
+    # Lets the container reach a gateway (e.g. OmniRoute) running on this machine: AI_BASE_URL=http://host.docker.internal:20128/v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+volumes:
+  jobfinder-data:

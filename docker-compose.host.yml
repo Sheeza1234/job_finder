@@ -1,0 +1,18 @@
+# Use this instead of docker-compose.yml when the AI gateway (e.g. OmniRoute) runs on THIS machine and listens on
+# 127.0.0.1 only. A bridged container cannot see the host's loopback, so this runs the app on the host network (Linux).
+#   docker compose -f docker-compose.host.yml up -d --build
+# The app still listens on loopback only (HOST=127.0.0.1), so it is reachable only from this computer.
+# In .env: AI_BASE_URL=http://127.0.0.1:20128/v1  AI_PROTOCOL=openai  AI_API_KEY=...  AI_MODEL=...
+services:
+  jobfinder:
+    build: .
+    network_mode: host
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      HOST: 127.0.0.1
+    volumes:
+      - jobfinder-data:/data
+    restart: unless-stopped
+volumes:
+  jobfinder-data:

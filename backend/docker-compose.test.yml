@@ -1,0 +1,11 @@
+# Backend tests against a throwaway Postgres (same engine as Supabase). Nothing is published to the host.
+#   docker compose -f backend/docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests
+services:
+  pg:
+    image: postgres:16-alpine
+    environment: { POSTGRES_PASSWORD: test, POSTGRES_DB: jobfinder_test }
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d jobfinder_test"], interval: 2s, timeout: 3s, retries: 20 }
+  tests:
+    build: { context: ., dockerfile: Dockerfile.test }
+    depends_on: { pg: { condition: service_healthy } }
+    environment: { TEST_DATABASE_URL: "postgresql://postgres:test@pg:5432/jobfinder_test" }
