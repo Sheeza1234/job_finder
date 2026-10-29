@@ -7,7 +7,7 @@ services:
   jobfinder:
     build: .
     network_mode: host
-    env_file: .env
+    env_file: backend/.env
     environment:
       DATA_DIR: /data
       HOST: 127.0.0.1

@@ -17,7 +17,7 @@ types.setTypeParser(114, (v) => v);                   // json / jsonb stay text
 types.setTypeParser(3802, (v) => v);
 types.setTypeParser(16, (v) => (v === 't' ? 1 : 0));  // boolean
 
-const MIGRATIONS_DIR = path.join(__dirname, '..', 'backend', 'app', 'migrations');   // one schema for the whole project
+const MIGRATIONS_DIR = path.join(__dirname, '..', 'app', 'migrations');   // one schema for the whole project
 const LOCK_ID = 7426001;                                                              // same advisory lock the Python backend uses
 const TABLES_WITH_ID = ['documents', 'jobs', 'cv_versions', 'cover_letters', 'notifications', 'audit_logs'];
 

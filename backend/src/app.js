@@ -82,7 +82,8 @@ function createApp(db, { uploadDir = path.join(config.dataDir, 'uploads') } = {}
     if (!d) return res.status(410).send('This download link is invalid or has expired.');
     res.set('X-Content-Type-Options', 'nosniff').download(storedPath(d.stored_name), d.filename);
   });
-  app.use(express.static(path.join(config.root, 'public')));
+  // Optional: serve the built frontend (frontend/dist) when present, e.g. the single-host Docker deployment. On Vercel the UI is hosted separately.
+  app.use(express.static(path.join(config.root, '..', 'frontend', 'dist')));
 
   // Stored names are random, but never trust a path that came out of the database.
   const storedPath = (name) => {

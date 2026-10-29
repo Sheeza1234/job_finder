@@ -1,36 +1,11 @@
 {
-  "name": "saudi-job-finder",
-  "version": "1.0.0",
-  "main": "src/server.js",
+  "name": "saudi-job-finder-workspace",
+  "private": true,
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
-    "test": "node --import ./tests/setup.js --test tests/",
-    "migrate": "node src/migrate.js",
-    "build": "npm --prefix web run build",
-    "web:install": "npm --prefix web install",
-    "web:dev": "npm --prefix web run dev"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "AI-powered Saudi Arabia job finder and application assistant",
-  "dependencies": {
-    "@anthropic-ai/sdk": "^1.3.0",
-    "docx": "^9.14.0",
-    "dotenv": "^18.0.9",
-    "express": "^5.3.0",
-    "helmet": "^8.3.0",
-    "mammoth": "^1.13.0",
-    "multer": "^2.5.0",
-    "nodemailer": "^10.2.1",
-    "pdf-parse": "^2.4.5",
-    "pdfkit": "^0.20.2",
-    "pg": "^8.23.1",
-    "puppeteer-core": "^24.43.1",
-    "zod": "^4.6.7"
-  },
-  "engines": {
-    "node": ">=20"
-  },
-  "private": true
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "dev": "node scripts/dev.js",
+    "start": "node scripts/dev.js --prod",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test"
+  }
 }

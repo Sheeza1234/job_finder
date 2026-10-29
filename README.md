@@ -4,10 +4,10 @@ A personal, single-user web app that finds jobs in Saudi Arabia, scores them aga
 truthfully, drafts cover letters, and tracks applications. **It never submits an application without your explicit action.**
 
 ```bash
-npm install && cp .env.example .env && npm start     # http://127.0.0.1:3000  (Node 20+)
+npm run install:all && cp backend/.env.example backend/.env && npm run dev   # UI http://localhost:5173, API http://127.0.0.1:3000  (Node 20+)
 ```
 
-The UI is a React + TypeScript + Tailwind app in `web/` that builds into `public/` (already built in this folder). After changing it: `npm run web:install` once, then `npm run build`. For live editing, run the server and `npm run web:dev`.
+The project is two folders: `backend/` (Express API) and `frontend/` (React + TypeScript + Tailwind, builds to `frontend/dist`). `npm run dev` starts both; `npm start` builds the UI and serves everything from the backend on :3000. Deploy `frontend/` to Vercel (set the backend URL in `frontend/vercel.json`) and host `backend/` separately.
 
 | Doc | Contents |
 |---|---|
