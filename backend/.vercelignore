@@ -1,0 +1,9 @@
+app/*.py
+app/routers
+app/services
+tests
+requirements*.txt
+pytest.ini
+Dockerfile*
+docker-compose*.yml
+data
