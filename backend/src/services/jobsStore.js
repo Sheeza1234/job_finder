@@ -89,7 +89,12 @@ async function scanJobs(db, f = {}, profile = null) {
   if (f.scope !== 'all') add(`(source = 'manual' OR country IN (${COUNTRIES.map(() => '?').join(',')}) OR (work_mode = 'remote' AND remote_eligibility != 'restricted'))`, ...COUNTRIES);
   if (f.country) add('country = ?', f.country);
   if (f.city) add('city = ?', f.city);
-  if (f.q) add('(title ILIKE ? OR description ILIKE ?)', `%${f.q}%`, `%${f.q}%`);
+  // Every word must appear somewhere in the title, company or description (not the exact phrase), so
+  // "full stack developer" also finds "Senior Full-Stack Software Developer".
+  for (const w of String(f.q || '').replace(/full[\s-]+stack/gi, 'fullstack').split(/\s+/).filter(Boolean)) {
+    if (/^fullstack$/i.test(w)) add("(title ~* 'full[ -]*stack' OR company ~* 'full[ -]*stack' OR description ~* 'full[ -]*stack')");
+    else add('(title ILIKE ? OR company ILIKE ? OR description ILIKE ?)', `%${w}%`, `%${w}%`, `%${w}%`);
+  }
   if (f.company) add('company ILIKE ?', `%${f.company}%`);
   if (f.industry) add('industry ILIKE ?', `%${f.industry}%`);
   if (f.experience_level) add('experience_level = ?', f.experience_level);
