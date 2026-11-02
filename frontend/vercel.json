@@ -3,8 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-BACKEND-HOST/api/:path*" },
-    { "source": "/dl/:token", "destination": "https://YOUR-BACKEND-HOST/dl/:token" },
-    { "source": "/healthz", "destination": "https://YOUR-BACKEND-HOST/healthz" }
+    { "source": "/api/:path*", "destination": "https://job-finder-akok.vercel.app/api/:path*" },
+    { "source": "/dl/:token", "destination": "https://job-finder-akok.vercel.app/dl/:token" },
+    { "source": "/healthz", "destination": "https://job-finder-akok.vercel.app/healthz" }
   ]
 }
