@@ -174,7 +174,7 @@ function createApp(db, { uploadDir = path.join(config.dataDir, 'uploads') } = {}
     const original = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
     try { validateUpload(req.file.path, path.extname(original)); } catch (e) { fs.rmSync(req.file.path, { force: true }); throw e; }
     let text = '';
-    try { text = await safeExtract(req.file.path, original); } catch { /* stored anyway; text stays empty */ }
+    try { text = await safeExtract(req.file.path, original); } catch (e) { console.error('CV text extraction failed:', e.message); /* stored anyway; text stays empty */ }
     const r = await db.prepare('INSERT INTO documents (kind, filename, mime, stored_name, text, created_at) VALUES (?,?,?,?,?,?)')
       .run(kind, original, req.file.mimetype, req.file.filename, text, new Date().toISOString());
     if (kind === 'cv' && !(await db.prepare("SELECT 1 FROM documents WHERE kind = 'cv' AND is_master = true").get())) await db.prepare('UPDATE documents SET is_master = true WHERE id = ?').run(r.lastInsertRowid);

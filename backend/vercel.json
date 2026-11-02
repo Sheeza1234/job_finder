@@ -3,5 +3,5 @@
   "installCommand": "npm install",
   "buildCommand": "",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
-  "functions": { "api/index.js": { "maxDuration": 60, "includeFiles": "{app/migrations/**,certs/**}" } }
+  "functions": { "api/index.js": { "maxDuration": 60, "includeFiles": "{app/migrations/**,certs/**,node_modules/pdf-parse/**,node_modules/pdfjs-dist/**,node_modules/@napi-rs/**}" } }
 }
