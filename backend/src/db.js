@@ -130,18 +130,18 @@ function connection(url) {
 }
 
 // openDb() uses DATABASE_URL (your Supabase project). Tests pass a url and a throwaway schema.
-async function openDb({ url = config.databaseUrl, schema = null, max = 8 } = {}) {
+async function openDb({ url = config.databaseUrl, schema = null, max = 8, idleMs = 600000, warm = true } = {}) {
   if (!url) throw new Error('DATABASE_URL is not set. Add the Supabase connection string (Project Settings -> Database) to .env.');
   if (schema) {
     const admin = new Pool({ ...connection(url), max: 1 });
     await admin.query(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
     await admin.end();
   }
-  const pool = new Pool({ ...connection(url), max, ...(schema ? { options: `-c search_path="${schema}"` } : {}), idleTimeoutMillis: 600000, keepAlive: true, connectionTimeoutMillis: 30000 });   // a new connection to a far-away pooler takes seconds: keep them warm
+  const pool = new Pool({ ...connection(url), max, ...(schema ? { options: `-c search_path="${schema}"` } : {}), idleTimeoutMillis: idleMs, keepAlive: true, connectionTimeoutMillis: 30000 });   // a new connection to a far-away pooler takes seconds: keep them warm
   pool.on('error', () => { /* an idle connection dropped; the pool replaces it */ });
   const db = new Db(pool, { schema });
   await migrate(db);
-  if (!schema) await Promise.all([1, 2, 3, 4].map(() => pool.query('SELECT 1')));   // open a few connections up front
+  if (!schema && warm) await Promise.all([1, 2, 3, 4].map(() => pool.query('SELECT 1')));   // open a few connections up front
   return db;
 }
 

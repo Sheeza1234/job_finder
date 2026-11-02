@@ -7,7 +7,8 @@ const { createApp } = require('../src/app');
 
 let appPromise;
 module.exports = async (req, res) => {
-  appPromise = appPromise || openDb().then((db) => createApp(db)).catch((e) => { appPromise = null; throw e; });
+  appPromise = appPromise || // Every serverless instance has its own pool and Supabase's pooler allows only ~15 clients in total, so keep each tiny and short-lived.
+  openDb({ max: 2, idleMs: 5000, warm: false }).then((db) => createApp(db)).catch((e) => { appPromise = null; throw e; });
   try { (await appPromise)(req, res); }
   catch (e) { res.statusCode = 500; res.end(`Could not connect to the database: ${e.message}`); }
 };
