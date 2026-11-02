@@ -77,4 +77,15 @@ async function undo(db) {
   return restored;
 }
 
-module.exports = { basicExtract, mergeDraft, missingFields, layer, saveBackup, importStatus, undo, ESSENTIAL };
+// A different person's (or a newer) CV should not be blended into the old profile: clear everything a CV provides, keep
+// settings such as job preferences, sensitive-question answers and links the user manages elsewhere.
+function clearCvFields(profile) {
+  const p = JSON.parse(JSON.stringify(profile));
+  for (const [k] of SCALARS) p[k] = '';
+  p.yearsExperience = null;
+  for (const [k] of [...STR_LISTS, ...OBJ_LISTS]) p[k] = [];
+  p.preferredTitles = []; p.cvKeywords = [];
+  return profileSvc.normalize(p);
+}
+
+module.exports = { clearCvFields, basicExtract, mergeDraft, missingFields, layer, saveBackup, importStatus, undo, ESSENTIAL };

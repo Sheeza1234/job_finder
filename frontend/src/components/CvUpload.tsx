@@ -7,13 +7,13 @@ import { Btn, Row } from './ui';
 
 type App = ReturnType<typeof useApp>;
 
-/** After a CV is uploaded: read it and fill the profile (only empty fields), then say what was filled and what is missing.
+/** After a CV is uploaded: read it and replace the CV-derived parts of the profile (the old one is kept for Undo), then say what was filled and what is missing.
  *  If AI consent is declined, contact details are still read locally. */
 export async function autoFillFromCv(app: App, documentId: number): Promise<boolean> {
   let r: Rec;
-  try { r = await api('/api/profile/auto-fill', { method: 'POST', body: { documentId } }); } catch (e) {
+  try { r = await api('/api/profile/auto-fill', { method: 'POST', body: { documentId, replace: true } }); } catch (e) {
     if (!/^Cancelled/.test((e as Error).message)) { toast((e as Error).message, true); return false; }
-    try { r = await api('/api/profile/auto-fill', { method: 'POST', body: { documentId, useAi: false } }); } catch (x) { toast((x as Error).message, true); return false; }
+    try { r = await api('/api/profile/auto-fill', { method: 'POST', body: { documentId, useAi: false, replace: true } }); } catch (x) { toast((x as Error).message, true); return false; }
   }
   app.setProfile(r.profile as Profile);
   // The AI could not read the CV (even after an automatic retry): say so plainly instead of pretending it worked.

@@ -132,7 +132,9 @@ function createApp(db, { uploadDir = path.join(config.dataDir, 'uploads') } = {}
       }
       if (ai_info.used) delete ai_info.failed;
     }
-    const before = await profileSvc.getProfile(db);
+    const saved = await profileSvc.getProfile(db);
+    // replace: the CV just uploaded becomes the whole profile (saved copy kept for undo) instead of being blended with the old one.
+    const before = req.body?.replace ? cvImport.clearCvFields(saved) : saved;
     const { merged, filled, missing } = cvImport.mergeDraft(before, draft);
     // Keywords found in the CV, and target-title tags suggested from them (AI with evidence checks, else offline rules).
     const sugg = rawAi ? titlesSvc.validateAi(rawAi, merged, doc.text) : { keywords: [], suggestions: [] };
@@ -144,7 +146,9 @@ function createApp(db, { uploadDir = path.join(config.dataDir, 'uploads') } = {}
     let titlesAdded = 0;
     if (!profileSvc.targetTitles(before).length && suggestions.length) { merged.preferredTitles = suggestions.map((x) => x.title); titlesAdded = suggestions.length; filled.push(`Target job titles (${titlesAdded} suggested)`); }
     if (filled.length || keywordsChanged) {
-      if (filled.length) await cvImport.saveBackup(db, before, doc.filename);
+      // A retry of the same CV must not overwrite the undo copy with the half-filled profile from the first attempt.
+      const prev = await cvImport.importStatus(db);
+      if (filled.length && !(req.body?.replace && prev && prev.filename === doc.filename)) await cvImport.saveBackup(db, saved, doc.filename);
       await profileSvc.saveProfile(db, merged);
     }
     res.json({ filled, missing, profile: merged, suggestions, keywords, ai: ai_info, document: { id: doc.id, filename: doc.filename } });
